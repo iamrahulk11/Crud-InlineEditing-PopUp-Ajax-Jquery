@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<h1 class="text-info text-center">List</h1>
+
+<button type="button" class="btn btn-success" data-toggle="modal" style="margin-bottom: 20px;" id="btnAddRecord"> Add Record </button>
+
+
+<table class="table table-bordered text-center table-hover">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>UserName</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Gender</th>
+            <th>Date_Of_Birth</th>
+            <th>Address</th>
+            <th>Country</th>
+            <th>State</th>
+            <th>Hobbies</th>
+            <th>Operation</th>
+        </tr>
+    </thead>
+    <tbody id="table_data"></tbody>
+</table>
+
+<div class="modal fade-modal" tabindex="-1" aria-labelledby="exampleModalLabel" id="AddUserModal" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content m-2">
+            <div class="modal-header">
+                <h1 class="text-success modal-title" id="UserHeader">Add Record</h1>
+                <button type="button" class="btn-close" onclick="$('#AddUserModal').modal('hide');"></button>
+            </div>
+            <div class="modal-body">
+
+                <form method="post">
+                    <div id="imageView" class="form-group text-center" style="display: none;">
+
+                        <img id="imgshow" src="#" title="UserImg" height="200" width="300" />
+
+                    </div>
+                    <div id="myForm">
+                        <div id="idForm" class="form-group" style="display: none;">
+                            <label for="">Id:</label>
+                            <input type="text" class="form-control" id="UserId" disabled="disabled">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="">Full Name:</label>
+                            <input type="text" placeholder="Enter your full name" class="form-control" id="NameText" autocomplete="off">
+                            <span class="text-danger" id="eName"></span>
+                        </div>
+                        <div class="form-group mt-2 row">
+                            <div class="col">
+                                <label>Email:</label>
+                                <input type="email" placeholder="Enter your email" class="form-control" id="EmailText" autocomplete="off">
+                                <span class="text-danger" id="eEmail"></span>
+                            </div>
+                            <div class="col">
+                                <label>Contact:</label>
+                                <input type="number" placeholder="Enter your contact" class="form-control" id="ContactText" autocomplete="off">
+                                <span class="text-danger" id="eContact"></span>
+                            </div>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label>Gender:</label>
+                            <br>
+                            <div class="d-inline-flex">
+                                <input type="radio" name="Gender" id="Male" value="Male" checked="">
+                                <label class="p-2" for="GenderMale">Male</label>
+
+                                <input type="radio" name="Gender" id="Female" value="Female">
+                                <label class="p-2" for="GenderFemale">Female</label>
+
+                                <input type="radio" name="Gender" id="Other" value="Other">
+                                <label class="p-2" for="GenderOther">Other</label>
+
+                            </div>
+                            <span class="text-danger" id="eGender"></span>
+                        </div>
+                        <div class="form-group col-6">
+                            <label>Date Of Birth:</label>
+                            <input type="date" placeholder="dd-mm-yyyy" class="form-control" id="DateOfBirthText" autocomplete="off">
+                            <span class="text-danger" id="eDob"></span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label>Address:</label>
+                            <textarea type="text" placeholder="Enter your address" class="form-control" id="AddressText" autocomplete="off" style="resize:none;"></textarea>
+                            <span class="text-danger" id="eAddress"></span>
+                        </div>
+
+                        <div class="form-group row ">
+                            <div class="col">
+                                <label>Country:</label>
+
+                                <select class="form-control" name="Countries" id="CountryText" autocomplete="off">
+                                    <option selected="">--Select Country--</option>
+                                    <option value="India">India</option>
+
+                                </select>
+                                <span class="text-danger" id="eCountry"></span>
+                            </div>
+
+                            <div class="col">
+                                <label>State:</label>
+                                <select class="form-control" name="States" id="StateText" autocomplete="off">
+                                    <option selected="">--Select State--</option>
+                                    <option value="Delhi" >Delhi</option>
+
+                                </select>
+                                <span class="text-danger" id="eState"></span>
+                            </div>
+                        </div>
+                        <div id="passForm" class="form-group mt-2">
+                            <label>Password:</label>
+                            <input type="password" placeholder="Enter your password" class="form-control" id="PasswordText" autocomplete="off">
+                            <span class="text-danger" id="ePass"></span>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label>Hobbies:</label>
+                            <br>
+                            <div class="d-inline-flex">
+                                <input type="checkbox" id="MusicCb" name="Hobbie" value="Music">
+                                <label class="p-2" for="MusicCb">Music</label>
+                                <input type="checkbox" id="ProgrammingCb" name="Hobbie" value="Programming">
+                                <label class="p-2" for="ProgrammingCb">Programming</label><br>
+                                <input type="checkbox" id="DrawingCb" name="Hobbie" value="Drawing">
+                                <label class="p-2" for="DrawingCb">Drawing</label><br>
+                                <input type="checkbox" id="SportsCb" name="Hobbie" value="Sports">
+                                <label class="p-2" for="SportsCb">Sports</label><br>
+
+                            </div>
+                            <br>
+                            <span class="text-danger" id="eHobby"></span>
+                        </div>
+                        <div class="form-group mt-2">
+
+                            <label>Choose Image:</label>
+                            <br>
+                            <img id="imgUpload" height="100" width="100" src="" title="UserImg" style="display: none;" />
+                            <input type="file" id="ImageText">
+                            <br>
+                            <span class="text-danger" id="eImage"></span>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" onclick="AddUserRecord();" id="AddUserRecord" style="display: block;">Submit</button>
+                <button class="btn btn-warning" onclick="UpdateUserRecord();" style="display:none;" id="btnUpdate">Update</button>
+                <button class="btn btn-danger btn-default" onclick="$('#AddUserModal').modal('hide');">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/Scripts/Custom/MyCustom.js"></script>
+
+@*<script src="/Scripts/jquery-3.3.1.js"></script>
+    <script src="/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="/Scripts/Custom/MyCustom.js"></script>*@
+
+
