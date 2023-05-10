@@ -75,14 +75,9 @@ function ImgView(userid) {
             $('#UserHeader').text('Image');
             $('#imageView').show();
             $('#myForm').hide();
-            // $('#imgshow').html('<img src="' + item.ImagePath + '">');
-
-            var setsrc = data;
-            //document.getElementById("imgshow").src = setsrc;
-            $("#imgshow").attr("src", setsrc);
-
-
-
+           // alert(data);
+          //  $('#imageView').html('<img src="' + data + '"height="350" width="350">');
+            $('#imageView').html('<img src="' + data + '" height="200" width="300">');
         },
         error: function () {
             alert('Something went wrong!!');
@@ -250,7 +245,7 @@ function resetResult() {
         }
     }
 }
-function isValidUpdate(Name, CEmail, CContact, CDOB, CAddress, CCountry, CState, Img, result) {
+function isValidUpdate(Name, CEmail, CContact, CDOB, CAddress, CCountry, CState, result) {
     $('#eName').text("");
     $('#eEmail').text("");
     $('#eContact').text("");
@@ -259,12 +254,14 @@ function isValidUpdate(Name, CEmail, CContact, CDOB, CAddress, CCountry, CState,
     $('#eCountry').text("");
     $('#eState').text("");
     //$('#ePass').text("");
-    $('#eImage').text("");
+   // $('#eImage').text("");
     $('#eHobby').text("");
 
-    if (Name == '' || CEmail == '' || CContact == '' || CContact.length < 10 || CContact.length > 10 || CDOB == '' || CAddress == '' || CCountry == "--Select Country--" || CState == "--Select State--" || Img == '' || result == "") {
+    if (Name == '' || CEmail == '' || CContact == '' || CContact.length < 10 || CContact.length > 10 || CDOB == '' || CAddress == '' || CCountry == "--Select Country--" || CState == "--Select State--" || result == "") {
         if (Name == '') {
             $('#eName').text("*Name is required");
+        } else if (Name != /[A - Za - z\\s]/) {
+            $('#eName').text("*Name is Invalid");
         }
         if (CEmail == '') {
             $('#eEmail').text("*Email is required");
@@ -282,9 +279,7 @@ function isValidUpdate(Name, CEmail, CContact, CDOB, CAddress, CCountry, CState,
         } if (CState == '--Select State--') {
             $('#eState').text("*State is required");
 
-        } if (Img == '') {
-            $('#eImage').text("*Image is required");
-        } if (result == '') {
+                } if (result == '') {
             $('#eHobby').text("*Please select Hobbies");
         }
 
@@ -354,7 +349,7 @@ function Delete(Userid) {
 }
 
 function Edit(Userid) {
-    debugger;
+    
     $('#eName').text("");
     $('#eEmail').text("");
     $('#eContact').text("");
@@ -366,12 +361,7 @@ function Edit(Userid) {
     $('#eImage').text("");
     $('#eHobby').text("");
     $('#ImageText').val('');
-
-    $('#imgUpload').hide();
-    $('#imgUpload').attr("src", "");
-    $.ajax({
-        
-
+    $.ajax({     
         url: '/Home/Edit?id=' + Userid,
         type: 'Get',
         contentType: 'application/json;charset=utf-8;',
@@ -441,10 +431,13 @@ function Edit(Userid) {
             $('#btnUpdate').css('display', 'block');
             $('#UserHeader').text('Update Record');
 
-           // $("#imgUpload").show();
-
-           // $("#imgUpload").attr("src", data[0].ImagePath);
-
+            $('#imgUpload').css('display', 'block');
+           /* var file = data[0].ImagePath.file[0];*/
+            
+            
+            $("#imgUpload").attr("src", data[0].ImagePath);
+            /*var fileImg = $("#imgUpload").get(0).files;
+            $('#ImageText').val(fileImg[0]);*/
             $('#passForm').hide();
             $('#imageView').hide();
 
@@ -457,7 +450,7 @@ function Edit(Userid) {
 
 function UpdateUserRecord() {
 
-
+    debugger;
     var Name = $('#NameText').val();
     var CEmail = $('#EmailText').val();
     var CContact = $('#ContactText').val();
@@ -466,7 +459,7 @@ function UpdateUserRecord() {
     var CCountry = $('#CountryText').val();
     var CState = $('#StateText').val();
     // var CPassword = $('#PasswordText').val();
-    var Img = $('#ImageText').val();
+   // var Img = $('#ImageText').val();
 
     var checkboxes =
         document.getElementsByName('Hobbie');
@@ -480,7 +473,7 @@ function UpdateUserRecord() {
         }
     } result = result.trim();
 
-    if (isValidUpdate(Name, CEmail, CContact, CDOB, CAddress, CCountry, CState, Img, result) == false) {
+    if (isValidUpdate(Name, CEmail, CContact, CDOB, CAddress, CCountry, CState, result) == false) {
         return false;
     }
     var selectedGender = document.getElementsByName('Gender');
@@ -490,13 +483,14 @@ function UpdateUserRecord() {
             gender = selectedGender[i].value;
         }
     }
+    if ($('#ImageText').val() != '') {
+        var fileImg = $('#ImageText').get(0).files;
+        var extension = $("#ImageText").val().split('.').pop().toUpperCase();
+        if (extension != "PNG" && extension != "JPG" && extension != "GIF" && extension != "JPEG") {
 
-    var fileImg = $('#ImageText').get(0).files;
-    var extension = $("#ImageText").val().split('.').pop().toUpperCase();
-    if (extension != "PNG" && extension != "JPG" && extension != "GIF" && extension != "JPEG") {
-
-        alert('Imvalid image file format.');
-        return false;
+            alert('Imvalid image file format.');
+            return false;
+        }
     }
 
     var userdata = new FormData();
@@ -511,7 +505,10 @@ function UpdateUserRecord() {
     userdata.append('State', $('#StateText').val());
     userdata.append('Hobbies', result);
     //userdata.append('Password', $('#PasswordText').val());
-    userdata.append('FileName', fileImg[0]);
+    if ($('#ImageText').val() != '') {
+        userdata.append('FileName', fileImg[0]);
+    }
+    
 
     $.ajax({
         url: '/Home/Update',

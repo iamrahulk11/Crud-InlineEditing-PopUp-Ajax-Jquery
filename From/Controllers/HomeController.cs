@@ -39,7 +39,7 @@ namespace From.Controllers
             string storePass = ASCIIEncoding.ASCII.GetString(encryptPass);
             return storePass;
         }
-        public ActionResult UserRegister()
+        public JsonResult UserRegister()
         {
             List<UserRegisterModel> list = new List<UserRegisterModel>();
             try
@@ -146,9 +146,10 @@ namespace From.Controllers
                         model.Country = Convert.ToString(dr["Country"]);
                         model.State = Convert.ToString(dr["State"]);
                         model.Hobbies = Convert.ToString(dr["Hobbies"]);
-                    string fileName = Path.Combine(Server.MapPath(dr["ImagePath"].ToString()));
-                    model.ImagePath = fileName;
-
+                    /*string fileName = Path.Combine(Server.MapPath(dr["ImagePath"].ToString()));
+                    model.ImagePath = fileName;*/
+                    string filePath = Url.Content(dr["ImagePath"].ToString());
+                    model.ImagePath = filePath;
                         list.Add(model);
                     }
                     con.Close();
@@ -170,37 +171,62 @@ namespace From.Controllers
            
             try
             {
-                string fileName = Path.GetFileNameWithoutExtension(model.FileName.FileName);
-                string extension = Path.GetExtension(model.FileName.FileName);
-                HttpPostedFileBase postedFile = model.FileName;
-                string FileLength = Convert.ToString(postedFile.ContentLength);
+                if (model.FileName != null)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(model.FileName.FileName);
+                    string extension = Path.GetExtension(model.FileName.FileName);
+                    HttpPostedFileBase postedFile = model.FileName;
+                    string FileLength = Convert.ToString(postedFile.ContentLength);
 
-                fileName += extension;
-                model.ImagePath = "~/images/" + fileName;
-                fileName = Path.Combine(Server.MapPath("~/images/"), fileName);
+                    fileName += extension;
+                    model.ImagePath = "~/images/" + fileName;
+                    fileName = Path.Combine(Server.MapPath("~/images/"), fileName);
 
-                model.FileName.SaveAs(fileName);
+                    model.FileName.SaveAs(fileName);
+
+                    MySqlCommand cmd = new MySqlCommand("sp_UpdateData", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@check", true);
+                    cmd.Parameters.AddWithValue("@id", model.Userid);
+                    cmd.Parameters.AddWithValue("@name", model.Username);
+                    cmd.Parameters.AddWithValue("@email", model.Email);
+                    cmd.Parameters.AddWithValue("@contact", model.Contact);
+                    cmd.Parameters.AddWithValue("@gender", model.Gender);
+                    cmd.Parameters.AddWithValue("@DateOfbirth", model.DateOfBirth);
+                    cmd.Parameters.AddWithValue("@address", model.Address);
+                    cmd.Parameters.AddWithValue("@hobbies", model.Hobbies);
+                    cmd.Parameters.AddWithValue("@country", model.Country);
+                    cmd.Parameters.AddWithValue("@state", model.State);
+                    cmd.Parameters.AddWithValue("@imagepath", model.ImagePath);
+                    //cmd.Parameters.AddWithValue("@password", model.Password);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                    return Json("Data Saved", JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    MySqlCommand cmd = new MySqlCommand("sp_UpdateData", con);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@check", false);
+                    cmd.Parameters.AddWithValue("@id", model.Userid);
+                    cmd.Parameters.AddWithValue("@name", model.Username);
+                    cmd.Parameters.AddWithValue("@email", model.Email);
+                    cmd.Parameters.AddWithValue("@contact", model.Contact);
+                    cmd.Parameters.AddWithValue("@gender", model.Gender);
+                    cmd.Parameters.AddWithValue("@DateOfbirth", model.DateOfBirth);
+                    cmd.Parameters.AddWithValue("@address", model.Address);
+                    cmd.Parameters.AddWithValue("@hobbies", model.Hobbies);
+                    cmd.Parameters.AddWithValue("@country", model.Country);
+                    cmd.Parameters.AddWithValue("@state", model.State);
+                    cmd.Parameters.AddWithValue("@imagepath", model.ImagePath);
+                    //cmd.Parameters.AddWithValue("@password", model.Password);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                    return Json("Data Saved", JsonRequestBehavior.AllowGet);
+                }
                 
-                MySqlCommand cmd = new MySqlCommand("sp_UpdateData", con);
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                cmd.Parameters.AddWithValue("@id", model.Userid);
-                cmd.Parameters.AddWithValue("@name",model.Username);
-                cmd.Parameters.AddWithValue("@email", model.Email);
-                cmd.Parameters.AddWithValue("@contact", model.Contact);
-                cmd.Parameters.AddWithValue("@gender", model.Gender);
-                cmd.Parameters.AddWithValue("@DateOfbirth", model.DateOfBirth);
-                cmd.Parameters.AddWithValue("@address", model.Address);
-                cmd.Parameters.AddWithValue("@hobbies", model.Hobbies);
-                cmd.Parameters.AddWithValue("@country", model.Country);
-                cmd.Parameters.AddWithValue("@state", model.State);
-                cmd.Parameters.AddWithValue("@imagepath", model.ImagePath);
-                //cmd.Parameters.AddWithValue("@password", model.Password);
-                con.Open();
-                cmd.ExecuteNonQuery();
-                con.Close();
-
-                return Json("Data Saved",JsonRequestBehavior.AllowGet);
             }catch(Exception ex)
             {
                 var e = ex.Message;
@@ -241,23 +267,24 @@ namespace From.Controllers
         {
             try
             {
-                string dataFile = "";
+                
                 MySqlCommand cmd = new MySqlCommand("sp_GetImagePath", con);
                 cmd.CommandType = CommandType.StoredProcedure;
 
                 cmd.Parameters.AddWithValue("@id", id);
                 con.Open();
                 MySqlDataReader dr = cmd.ExecuteReader();
+                string imgPath = "";
                 while (dr.Read())
                 {
-                    dataFile = Convert.ToString(dr["ImagePath"]);
+                    imgPath = Url.Content(dr["ImagePath"].ToString());
                 }
                 con.Close();
                 //  string fileName = Path.GetFileName(dr["ImagePath"].ToString().FileName);
-                string fileName = Path.Combine(Server.MapPath(dataFile));
+                //string fileName = Path.Combine(Server.MapPath(dataFile));
                 
 
-                return Json(fileName, JsonRequestBehavior.AllowGet);
+                return Json(imgPath, JsonRequestBehavior.AllowGet);
             }catch(Exception ex)
             {
                 var e = ex.Message;
