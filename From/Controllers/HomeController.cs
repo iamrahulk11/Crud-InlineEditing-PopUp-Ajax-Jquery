@@ -61,8 +61,9 @@ namespace From.Controllers
                     model.Country = Convert.ToString(dr["Country"]);
                     model.State = Convert.ToString(dr["State"]);
                     model.Hobbies = Convert.ToString(dr["Hobbies"]);
-                    model.ImagePath = Convert.ToString(dr["ImagePath"]);
-
+                    
+                    string filePath = Url.Content(dr["ImagePath"].ToString());
+                    model.ImagePath = filePath;
                     list.Add(model);
                 }
                 con.Close();

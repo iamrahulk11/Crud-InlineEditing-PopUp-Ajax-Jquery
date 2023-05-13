@@ -4,7 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap5.min.css" rel="stylesheet" />
+
+    <link href="~/Content/dataTables.bootstrap4.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    @* *@
+
     @*@Styles.Render("~/Content/css")*@
     @Scripts.Render("~/bundles/modernizr")
 </head>
@@ -29,7 +35,7 @@
             </div>
         </nav>
     </header>
-    <div class="container body-content">
+    <div class="container">
         @RenderBody()
         <hr />
         <footer>
@@ -38,10 +44,16 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
-    <script src="~/Scripts/bootstrap.min.js"></script>
-    @Scripts.Render("~/bundles/bootstrap")
     <script src="~/Scripts/jquery-3.4.1.js"></script>
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap4.min.js"></script>
+    @Scripts.Render("~/bundles/bootstrap")
+    @*  *@
+
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
     @RenderSection("scripts", required: false)
 </body>
 </html>
