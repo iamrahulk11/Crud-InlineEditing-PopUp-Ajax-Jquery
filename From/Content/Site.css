@@ -5,6 +5,8 @@
     padding-right: 15px;
 }
 
+
+
 /* Override the default bootstrap behavior where horizontal description lists 
    will truncate terms that are too long to fit in the left column 
 */
@@ -16,7 +18,7 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    max-width: 200px;
 }
 
 .tbl {
@@ -42,6 +44,17 @@ textarea {
     padding: 3px 3px 3px;
 }
 
+.pagination {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+    .pagination li {
+        margin: 0 1px;
+    }
+
+
 .colhobbies {
     max-width: 200px;
     word-break: break-word;
@@ -53,7 +66,7 @@ textarea {
 }
 
 .colemail {
-    max-width: 200px;
+    max-width: 170px;
     word-break: break-word;
 }
 
@@ -68,4 +81,10 @@ textarea {
 }
 #table_data{
 
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }

@@ -5,10 +5,31 @@
     ViewBag.Title = "Home Page";
 }
 
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2 class="text-bg-info justify-content-center text-center">User Registraion</h2>
+        </div>
+    </div>
+</div>
 
 
+@using (Html.BeginForm("GetData", "Home", FormMethod.Post))
+{
+    <div class="tbl">
+        <div class="d-flex" style="margin-right:750px;">
+            @Html.TextBox("SearchText", null, new { @class="form-control", @placeholder = "Search Record" })
+            <button class="btn btn-primary" type="submit">Search</button>
+        </div>
+        <div class="p-2">
+            <button type="button" class="btn btn-success" data-toggle="modal" id="btnAddRecord"> Add Record </button>
+        </div>
+    </div>
+   
+}
 
-<div id="TargetSearch" " class="tbl">
+
+<div id="TargetSearch" class="tbl">
     <table id="myTable" class="table text-center table-bordered table-hover">
         <thead>
             <tr>
@@ -35,7 +56,7 @@
                         <label id="userid" class="edit-mode" style="display: none;">@item.userid</label>
                     </td>
                     <td>
-                        <span class="display-mode" style="font-size:17px;"><a href="#" onclick="ImgView(@item.userid)"><img id="imgUpload" src="@item.ImagePath" height="80" width="80" /></a></span>
+                        <span class="display-mode" style="font-size:17px;"><a href="#" onclick="ImgView(@item.userid)"><img id="imgUpload" src="@Url.Content(item.ImagePath)" height="80" width="80" /></a></span>
                         <input type="file" id="ImageText" class="edit-mode" style="width: 80px; display: none;" />
                     </td>
                     <td>
@@ -114,8 +135,41 @@
 
         </tbody>
     </table>
-</div>
+    <br />
 
+</div>
+<div class="col-12 d-inline-flex justify-content-center align-item-center">
+    <div class="d-inline-flex justify-content-center align-item-center">
+
+        @{
+
+            double? totalPages = ViewBag.TotalPages;
+            for (int i = 1; i <= totalPages; i++)
+            {
+                <nav aria-label="pagination">
+                    <ul class="pagination p-1">
+                        @if (i == ViewBag.TotalPages)
+                        {
+                            <li class="active">
+                                @Html.ActionLink(i.ToString(), "Index", new { PageNumber = i })
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="">
+                                @Html.ActionLink(i.ToString(), "Index", new { PageNumber = i })
+                            </li>
+                        }
+                        |
+                    </ul>
+                </nav>
+
+            }
+
+        }
+
+    </div>
+</div>
 <div class="modal fade-modal" tabindex="-1" aria-labelledby="exampleModalLabel" id="AddUserModal" aria-hidden="true" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content m-2">
@@ -192,6 +246,9 @@
                                 <select class="form-control" name="States" id="AddStateText" autocomplete="off">
                                     <option selected="selected">--Select--</option>
                                     <option value="Delhi">Delhi</option>
+                                    <option value="Delhi">UttarPardesh</option>
+                                    <option value="Delhi">Bihar</option>
+                                    <option value="Delhi">Assam</option>
 
                                 </select>
                                 <span class="text-danger" id="eState"></span>
