@@ -13,7 +13,7 @@ The following **required** functionality is completed:
 
 * [x] Searching
 * [x] Pagination
-* [x] Add, Edit, Delete
+* [x] Add- Insert User data with Images (popup model), Edit- Edit User details with image (Inline Editting (Edit while Viewing)) , Delete- Delete User details (Inline Editting (Edit while Viewing)
 
 
 ## License
