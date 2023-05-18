@@ -63,10 +63,23 @@ namespace From.Controllers
             return View(list);
             //return View(db.userdbs.ToList());
         }
+        public ActionResult GetData()
+        {
+            return RedirectToAction("Index");
+        }
 
         [HttpPost]
         public ActionResult GetData(string SearchText)
         {
+            /*var v = (from a in db.userdbs
+                     where
+                     a.User_Name.Contains(search) ||
+                     a.Email.Contains(search) ||
+                     a.Contact.Contains(search)
+                     select a
+                     );
+            totalRecord = v.Count();
+            v = v.OrderBy(a => a.User_Name);*/
             if (SearchText == "" || SearchText==null)
             {
                 return RedirectToAction("Index");
@@ -79,14 +92,8 @@ namespace From.Controllers
         }
         /*public List<userdb> getUsers(string search,string sort,string sortdir,int skip,int pageSize,out int totalRecord)
         {
-            var v = (from a in db.userdbs where
-                     a.User_Name.Contains(search) ||
-                     a.Email.Contains(search) ||
-                     a.Contact.Contains(search)
-                     select a
-                     );
-            totalRecord = v.Count();
-            v = v.OrderBy(a => a.User_Name);
+            
+           
             if (pageSize > 0)
             {
                 v=v.Skip(skip).Take(pageSize);

@@ -312,7 +312,7 @@ function AddUserRecord() {
         processData: false,
         contentType: false,
         success: function () {
-            if (!alert('Data Saved!')) { window.location.reload(); }
+            if (!alert('Data Saved!')) window.location.replace("/Home/Index"); 
             resetResult();
 
             hidemodal();
@@ -455,7 +455,7 @@ function Delete(userid) {
     $.ajax({
         url: '/Home/Delete?id=' + userid,
         success: function () {
-            if (!alert('Data Deleted!')) { window.location.reload(); }
+            if (!alert('Data Deleted!')) window.location.replace("/Home/Index"); 
             //location.reload();
             $('.edit-mode').hide();
 
@@ -479,7 +479,7 @@ function Delete(userid) {
     });
 });*/
 
-/*function ShowUserData() {
+function ShowUserData() {
     var userData = [];
     var url = '/Home/UserRegister';
 
@@ -491,51 +491,51 @@ function Delete(userid) {
         contentType: 'application/json;charset=utf-8;',
         success: function (result, statu, xhr) {
             debugger;
-           
+
             //console.log(result);
             $.each(result, function (index, item) {
                 debugger;
-                let dateOfBirth = new Date(parseInt(item.DateOfBirth.substr(6)));
-                var date = dateOfBirth.getDate() + "/" + (dateOfBirth.getMonth() + 1) + "/" + dateOfBirth.getFullYear();
-                var editoperation = '<a href="#" class="btn btn-primary btn-sm m-1" onclick="Edit(' + item.Userid + ')">Edit</a>';
-                var deleteOperation = '<a href="#" class="btn btn-primary btn-sm m-1" onclick="Delete(' + item.Userid + ');">Delete</a>';
-                var operation = editoperation + "|" + deleteOperation;
-                var img = '<a href="#" onclick="ImgView(' + item.Userid + ');"><img src="' + item.ImagePath + '" style="width:100px;height:100px;"></a>';
-                userData.push([item.Userid,img, item.Username, item.Email, item.Contact, item.Gender, date, item.Address, item.Country, item.State, item.Hobbies, operation])
-               *//* object += '<tr>';
-*//* var imgPath = item.ImagePath;
- var imgName = imgPath.split('\\').pop().split('/').pop();*//*
-object += '<td>' + item.Userid + '</td>';
-object += '<td>  <a href = "#" onclick = "ImgView(' + item.Userid + ');"><img src="' + item.ImagePath + '" style="width:100px;height:100px;"></a></td>';
-object += '<td>' + item.Username + '</td>';
-object += '<td>' + item.Email + '</td>';
-object += '<td>' + item.Contact + '</td>';
-object += '<td>' + item.Gender + '</td>';
-
-let dateOfBirth = new Date(parseInt(item.DateOfBirth.substr(6)));
-var date = dateOfBirth.getDate() + "/" + (dateOfBirth.getMonth() + 1) + "/" + dateOfBirth.getFullYear();
-
-object += '<td>' + date + '</td>';
-object += '<td>' + item.Address + '</td>';
-object += '<td>' + item.Country + '</td>';
-object += '<td>' + item.State + '</td>';
-object += '<td>' + item.Hobbies + '</td>';
-object += '<td><a href="#" class="btn btn-primary btn-sm m-2" onclick="Edit(' + item.Userid + ')">Edit</a> || <a href="#" class="btn btn-primary btn-sm m-2" onclick="Delete(' + item.Userid + ');">Delete</a></td>';
-
-object += '</tr>';*//*
-
-});
-// $('#table_data').html(userData);
-},
-error: function () {
-alert('Data cannot get');
-}
-})
-$('#myTable').dataTable({
-data: userData
+                /* let dateOfBirth = new Date(parseInt(item.DateOfBirth.substr(6)));
+                 var date = dateOfBirth.getDate() + "/" + (dateOfBirth.getMonth() + 1) + "/" + dateOfBirth.getFullYear();
+                 var editoperation = '<a href="#" class="btn btn-primary btn-sm m-1" onclick="Edit(' + item.Userid + ')">Edit</a>';
+                 var deleteOperation = '<a href="#" class="btn btn-primary btn-sm m-1" onclick="Delete(' + item.Userid + ');">Delete</a>';
+                 var operation = editoperation + "|" + deleteOperation;
+                 var img = '<a href="#" onclick="ImgView(' + item.Userid + ');"><img src="' + item.ImagePath + '" style="width:100px;height:100px;"></a>';
+                 userData.push([item.Userid,img, item.Username, item.Email, item.Contact, item.Gender, date, item.Address, item.Country, item.State, item.Hobbies, operation])
+                                 object += '<tr>';
+                  var imgPath = item.ImagePath;
+                  var imgName = imgPath.split('\\').pop().split('/').pop();
+                 object += '<td>' + item.Userid + '</td>';
+                 object += '<td>  <a href = "#" onclick = "ImgView(' + item.Userid + ');"><img src="' + item.ImagePath + '" style="width:100px;height:100px;"></a></td>';
+                 object += '<td>' + item.Username + '</td>';
+                 object += '<td>' + item.Email + '</td>';
+                 object += '<td>' + item.Contact + '</td>';
+                 object += '<td>' + item.Gender + '</td>';
  
-});
-}*/
+                 let dateOfBirth = new Date(parseInt(item.DateOfBirth.substr(6)));
+                 var date = dateOfBirth.getDate() + "/" + (dateOfBirth.getMonth() + 1) + "/" + dateOfBirth.getFullYear();
+ 
+                 object += '<td>' + date + '</td>';
+                 object += '<td>' + item.Address + '</td>';
+                 object += '<td>' + item.Country + '</td>';
+                 object += '<td>' + item.State + '</td>';
+                 object += '<td>' + item.Hobbies + '</td>';
+                 object += '<td><a href="#" class="btn btn-primary btn-sm m-2" onclick="Edit(' + item.Userid + ')">Edit</a> || <a href="#" class="btn btn-primary btn-sm m-2" onclick="Delete(' + item.Userid + ');">Delete</a></td>';
+ 
+                 object += '</tr>';
+                 */
+                console.log(item);
+
+
+            });
+            // $('#table_data').html(userData);
+        },
+        error: function () {
+            alert('Data cannot get');
+        }
+
+    });
+}
 
 /*function GetCountry() {
     $.ajax({
