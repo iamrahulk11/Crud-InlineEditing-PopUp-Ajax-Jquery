@@ -9,47 +9,64 @@ using System.IO;
 using System.Web.UI.WebControls;
 using System.Text;
 using System.Data.Entity;
+using MySqlConnector;
+using System.Drawing;
 
 namespace From.Controllers
 {
     public class HomeController : Controller
     {
         form2dbEntities db = new form2dbEntities();
-        public ActionResult Index(int PageNumber=1)
+
+        public ActionResult Index()
         {
             List<userdb> list = new List<userdb>();
             try
+            
+            
             {
-                
                 var data = db.userdbs.ToList();
+                list = data.OrderByDescending(c => c.userid).ToList();
+                /*  List<userdb> lst = (List<userdb>)TempData["Umodel"];
+                  if (lst != null)
+                  {
+                      if (lst.Count > 0)
+                      {
+                          Session["Addbutton"] = "Hide";
 
-                var UserData_InDescOrder = data.OrderByDescending(c => c.userid).ToList();
+                          return View(lst);
+                      }
+                  }
+                  Session["Addbutton"] = "Show";
+                  var data = db.userdbs.ToList();
 
-                ViewBag.TotalPages = Math.Ceiling(UserData_InDescOrder.Count() / 3.0);
+                  var UserData_InDescOrder = data.OrderByDescending(c => c.userid).ToList();
 
-                UserData_InDescOrder= UserData_InDescOrder.Skip((PageNumber - 1) * 3).Take(3).ToList();
+                  ViewBag.TotalPages = Math.Ceiling(UserData_InDescOrder.Count() / 3.0);
 
-                foreach (var item in UserData_InDescOrder)
-                {
-                    if (item != null)
-                    {
-                        userdb model = new userdb();
-                        model.userid = item.userid;
-                        model.User_Name = item.User_Name;
-                        model.Email = item.Email;
-                        model.Contact = item.Contact;
-                        model.Gender = item.Gender;
-                        model.Date_Of_Birth = item.Date_Of_Birth;
-                        model.Address = item.Address;
-                        model.Country = item.Country;
-                        model.State = item.State;
-                        model.Hobbies = item.Hobbies;
-                        model.Password = item.Password;
-                        // Session["img"] = item.ImagePath;
-                        model.ImagePath = item.ImagePath;
-                        list.Add(model);
-                    }
-                }
+                  UserData_InDescOrder= UserData_InDescOrder.Skip((PageNumber - 1) * 3).Take(3).ToList();
+
+                  foreach (var item in UserData_InDescOrder)
+                  {
+                      if (item != null)
+                      {
+                          userdb model = new userdb();
+                          model.userid = item.userid;
+                          model.User_Name = item.User_Name;
+                          model.Email = item.Email;
+                          model.Contact = item.Contact;
+                          model.Gender = item.Gender;
+                          model.Date_Of_Birth = item.Date_Of_Birth;
+                          model.Address = item.Address;
+                          model.Country = item.Country;
+                          model.State = item.State;
+                          model.Hobbies = item.Hobbies;
+                          model.Password = item.Password;
+                          // Session["img"] = item.ImagePath;
+                          model.ImagePath = item.ImagePath;
+                          list.Add(model);
+                      }
+                  }*/
             }
             catch (Exception ex)
             {
@@ -63,33 +80,34 @@ namespace From.Controllers
             return View(list);
             //return View(db.userdbs.ToList());
         }
-        public ActionResult GetData()
-        {
-            return RedirectToAction("Index");
-        }
+        /*  public ActionResult GetData()
+          {
+              return RedirectToAction("Index");
+          }
 
-        [HttpPost]
-        public ActionResult GetData(string SearchText)
-        {
-            /*var v = (from a in db.userdbs
-                     where
-                     a.User_Name.Contains(search) ||
-                     a.Email.Contains(search) ||
-                     a.Contact.Contains(search)
-                     select a
-                     );
-            totalRecord = v.Count();
-            v = v.OrderBy(a => a.User_Name);*/
-            if (SearchText == "" || SearchText==null)
-            {
-                return RedirectToAction("Index");
-            }
-            List<userdb> model = new List<userdb>();
-            userdb userdb = new userdb();
-            model = db.userdbs.Where(e => e.User_Name.Contains(SearchText)).ToList();
-
-            return View("Index",model);
-        }
+          [HttpPost]
+          public ActionResult GetData(string SearchText)
+          {
+              *//*var v = (from a in db.userdbs
+                       where
+                       a.User_Name.Contains(search) ||
+                       a.Email.Contains(search) ||
+                       a.Contact.Contains(search)
+                       select a
+                       );
+              totalRecord = v.Count();
+              v = v.OrderBy(a => a.User_Name);*//*
+              if (SearchText == "" || SearchText==null)
+              {
+                  return RedirectToAction("Index");
+              }
+             // Session["Addbutton"] = "Hide";
+              List<userdb> model = new List<userdb>();
+              userdb userdb = new userdb();
+              model = db.userdbs.Where(e => e.User_Name.Contains(SearchText)).ToList();
+              TempData["Umodel"] = model;
+              return RedirectToAction("Index");
+          }*/
         /*public List<userdb> getUsers(string search,string sort,string sortdir,int skip,int pageSize,out int totalRecord)
         {
             
@@ -131,7 +149,57 @@ namespace From.Controllers
             }
         }
 
+        /*public JsonResult UserRegister(int PageNumber,string SearchText="")
+        {
+            List<userdb> list = new List<userdb>();
+            try
+            {
+                if (PageNumber > 0 && SearchText=="")
+                {
+                    var data = db.userdbs.ToList();
 
+                    var UserData_InDescOrder = data.OrderByDescending(c => c.userid).ToList();
+
+                    ViewBag.TotalPages = Math.Ceiling(UserData_InDescOrder.Count() / 3.0);
+
+                    UserData_InDescOrder = UserData_InDescOrder.Skip((PageNumber - 1) * 3).Take(3).ToList();
+
+                    foreach (var item in UserData_InDescOrder)
+                    {
+                        if (item != null)
+                        {
+                            userdb model = new userdb();
+                            model.userid = item.userid;
+                            model.User_Name = item.User_Name;
+                            model.Email = item.Email;
+                            model.Contact = item.Contact;
+                            model.Gender = item.Gender;
+                            model.Date_Of_Birth = item.Date_Of_Birth;
+                            model.Address = item.Address;
+                            model.Country = item.Country;
+                            model.State = item.State;
+                            model.Hobbies = item.Hobbies;
+                            model.Password = item.Password;
+                            // Session["img"] = item.ImagePath;
+                            model.ImagePath = item.ImagePath;
+                            list.Add(model);
+                        }
+                    }
+                }else if()
+
+            }
+            catch (Exception ex)
+            {
+                var e = new Exception(ex.Message);
+            }
+            finally
+            {
+
+            }
+
+            return Json(list,JsonRequestBehavior.AllowGet);
+            
+        }*/
 
         [HttpPost]
         public JsonResult Update(userdb model)
@@ -321,7 +389,10 @@ namespace From.Controllers
             }
         }
 
-
+        public JsonResult ExcelDataImport()
+        {
+            return Json(db.userdbs.ToList(), JsonRequestBehavior.AllowGet);
+        }
 
         public ActionResult About()
         {

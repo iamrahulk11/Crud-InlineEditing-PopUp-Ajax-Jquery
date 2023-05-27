@@ -4,7 +4,9 @@
 @{
     ViewBag.Title = "Home Page";
 }
-
+<div id="exlheader" class="align-content-center font-monospace" style="display:none;font-size:17px">
+    USER FORM DATA
+</div>
 <div class="container">
     <div class="row">
         <div class="col">
@@ -13,26 +15,39 @@
     </div>
 </div>
 
-
-@using (Html.BeginForm("GetData", "Home", FormMethod.Post))
-{
-    <div class="tbl">
-        <div class="d-flex" style="margin-right:750px;">
-            @Html.TextBox("SearchText", null, new { @class="form-control", @placeholder = "Search Record" })
-            <button class="btn btn-primary" type="submit">Search</button>
-        </div>
-        <div class="p-2">
-            <button type="button" class="btn btn-success" data-toggle="modal" id="btnAddRecord"> Add Record </button>
-        </div>
-    </div>
+<div class="tbl">
    
-}
+
+        <div class="d-flex p-2" style="margin-right:640px;">
+            <input type="text" class="form-control" placeholder="Search User" id="SearchText" />
+           
+            @*@Html.TextBox("SearchText", null, new { @class = "form-control", @placeholder = "Search Record" })*@
+            @*<button class="btn btn-primary" type="submit">Search</button>*@
+        </div>
+
+    
+
+    <div class="p-2">     
+            <button type="button" class="btn btn-success" data-toggle="modal" id="btnAddRecord"> Add Record </button>
+    </div>
+    <div class="p-2">
+        <button class="btn btn-success" onclick="ExportExcel();" id="ExportExcel">Export All Data</button>
+        <button class="btn btn-success" onclick="ExportSelectedExcel();" id="ExportSelectedExcel" >Export Data</button>
+
+    </div>
+
+
+
+
+</div>
 
 
 <div id="TargetSearch" class="tbl">
-    <table id="myTable" class="table text-center table-bordered table-hover">
+    <table id="myTable" class="table table-bordered table-hover">
+        
         <thead>
             <tr>
+                <th>Check</th>
                 <th>ID</th>
                 <th>Image</th>
                 <th>UserName</th>
@@ -48,97 +63,110 @@
             </tr>
         </thead>
         <tbody id="table_data">
-            @foreach (var item in Model)
+            @if (Model.Count() == 0)
             {
-                <tr class="Searchtbl">
-                    <td>
-                        <span class="display-mode" style="font-size:15px;">@item.userid</span>
-                        <label id="userid" class="edit-mode" style="display: none;">@item.userid</label>
-                    </td>
-                    <td>
-                        <span class="display-mode" style="font-size:17px;"><a href="#" onclick="ImgView(@item.userid)"><img id="imgUpload" src="@Url.Content(item.ImagePath)" height="80" width="80" /></a></span>
-                        <input type="file" id="ImageText" class="edit-mode" style="width: 80px; display: none;" />
-                    </td>
-                    <td>
-                        <span class="display-mode" style="font-size:14px;"><label id="lblName" class="colname">@item.User_Name</label></span>
-                        <input type="text" id="NameText" value="" class="edit-mode" style="width:100px;display:none;" />
-                    </td>
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblEmail" class="colemail">@item.Email</label></span>
-                        <input type="email" id="EmailText" value="" class="edit-mode" style="width: 170px; display: none;" />
-                    </td>
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblContact" class="colname">@item.Contact</label></span>
-                        <input type="number" id="ContactText" value="" class="edit-mode" style="width: 80px; display: none;" />
-                    </td>
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblGender">@item.Gender</label></span>
-                        <div class="edit-mode" style=" display: none;">
-                            <div class="d-inline-flex">
-                                <input type="radio" name="Gender" id="Male" value="Male">
-                                <label class="p-1" for="Male">Male</label>
-
-                                <input type="radio" name="Gender" id="Female" value="Female">
-                                <label class="p-1" for="Female">Female</label>
-
-                                <input type="radio" name="Gender" id="Other" value="Other">
-                                <label class="p-1" for="Other">Other</label>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblDob" class="colname">@item.Date_Of_Birth</label></span>
-                        <input type="date" id="DateOfBirthText" value="" class="edit-mode" style="width: 80px; display: none;" />
-                    </td>
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblAddress" class="coladdress">@item.Address</label></span>
-<textarea type="text" rows="3" id="AddressText" class="edit-mode" style="resize: none; display: none;">@item.Address</textarea>
-                    </td>
-
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblCountry">@item.Country</label></span>
-                        <select name="Countries" type="text" id="CountryText" class="edit-mode colstate" style="width: 80px; display: none;"><option value="">--Select--</option><option value="India">India</option></select>
-                    </td>
-
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblState">@item.State</label></span>
-                        <select name="States" type="text" id="StateText" class="edit-mode colstate" style="width: 80px; display: none;"><option value="">--Select--</option><option value="Delhi">Delhi</option><option value="UttarPardesh">Uttar Pardesh</option></select>
-                    </td>
-
-                    <td>
-                        <span class="display-mode" style="font-size:14px"><label id="lblHobbies" class="colhobbies">@item.Hobbies</label></span>
-                        <div class="edit-mode" style=" display: none;">
-                            <div class="d-block" style="width:90px">
-                                <input type="checkbox" id="Music" name="Hobbie" value="Music">
-                                <label class="p-0" for="Music">Music</label><br />
-                                <input type="checkbox" id="Programming" name="Hobbie" value="Programming">
-                                <label class="p-0" for="Programming">Programming</label><br />
-                                <input type="checkbox" id="Drawing" name="Hobbie" value="Drawing">
-                                <label class="p-0" for="Drawing">Drawing</label><br />
-                                <input type="checkbox" id="Sports" name="Hobbie" value="Sports">
-                                <label class="p-0" for="Sports">Sports</label><br />
-
-                            </div>
-                        </div>
-                    </td>
-
-                    <td>
-                        <a href="#" class="edit-user display-mode btn btn-primary btn-sm m-1">Edit</a>
-                        <br />
-                        <a href="#" class="display-mode btn btn-danger btn-sm m-1" onclick="Delete(@item.userid)">Delete</a>
-                        <button class="save-user edit-mode m-1 btn btn-sm btn-success" style=" display: none;">Save</button>
-                        <br />
-                        <button class="cancel-user edit-mode m-1 btn btn-sm btn-primary" style="display: none;">Cancel</button>
-                    </td>
+                <tr>
+                    <td colspan="12">Data Not Found</td>
                 </tr>
             }
+            else
+            {
+                foreach (var item in Model)
+                {
+        <tr class="Searchtbl">
+            <td>
+                <input class="mt-4" id="selectuser" type="checkbox" />
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:15px;">@item.userid</span>
+                <label id="userid" class="edit-mode" style="display: none;">@item.userid</label>
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:17px;"><a href="#" onclick="ImgView(@item.userid)"><img id="imgUpload" src="@Url.Content(item.ImagePath)" height="80" width="80" /></a></span>
+                <input type="file" id="ImageText" class="edit-mode" style="width: 80px; display: none;" />
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:14px;"><label id="lblName" class="colname">@item.User_Name</label></span>
+                <input type="text" id="NameText" value="" class="edit-mode" style="width:100px;display:none;" />
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblEmail" class="colemail">@item.Email</label></span>
+                <input type="email" id="EmailText" value="" class="edit-mode" style="width: 170px; display: none;" />
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblContact" class="colname">@item.Contact</label></span>
+                <input type="number" id="ContactText" value="" class="edit-mode" style="width: 80px; display: none;" />
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblGender">@item.Gender</label></span>
+                <div class="edit-mode" style=" display: none;">
+                    <div class="d-inline-flex">
+                        <input type="radio" name="Gender" id="Male" value="Male">
+                        <label class="p-1" for="Male">Male</label>
+
+                        <input type="radio" name="Gender" id="Female" value="Female">
+                        <label class="p-1" for="Female">Female</label>
+
+                        <input type="radio" name="Gender" id="Other" value="Other">
+                        <label class="p-1" for="Other">Other</label>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblDob" class="colname">@item.Date_Of_Birth</label></span>
+                <input type="date" id="DateOfBirthText" value="" class="edit-mode" style="width: 80px; display: none;" />
+            </td>
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblAddress" class="coladdress">@item.Address</label></span>
+<textarea type="text" rows="3" id="AddressText" class="edit-mode" style="resize: none; display: none;">@item.Address</textarea>
+            </td>
+
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblCountry">@item.Country</label></span>
+                <select name="Countries" type="text" id="CountryText" class="edit-mode colstate" style="width: 80px; display: none;"><option value="">--Select--</option><option value="India">India</option></select>
+            </td>
+
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblState">@item.State</label></span>
+                <select name="States" type="text" id="StateText" class="edit-mode colstate" style="width: 80px; display: none;"><option value="">--Select--</option><option value="Delhi">Delhi</option><option value="UttarPardesh">Uttar Pardesh</option></select>
+            </td>
+
+            <td>
+                <span class="display-mode" style="font-size:14px"><label id="lblHobbies" class="colhobbies">@item.Hobbies</label></span>
+                <div class="edit-mode" style=" display: none;">
+                    <div class="d-block" style="width:90px">
+                        <input type="checkbox" id="Music" name="Hobbie" value="Music">
+                        <label class="p-0" for="Music">Music</label><br />
+                        <input type="checkbox" id="Programming" name="Hobbie" value="Programming">
+                        <label class="p-0" for="Programming">Programming</label><br />
+                        <input type="checkbox" id="Drawing" name="Hobbie" value="Drawing">
+                        <label class="p-0" for="Drawing">Drawing</label><br />
+                        <input type="checkbox" id="Sports" name="Hobbie" value="Sports">
+                        <label class="p-0" for="Sports">Sports</label><br />
+
+                    </div>
+                </div>
+            </td>
+
+            <td>
+                <a href="#" class="edit-user display-mode btn btn-primary btn-sm m-1">Edit</a>
+                <br />
+                <a href="#" class="display-mode btn btn-danger btn-sm m-1" onclick="Delete(@item.userid)">Delete</a>
+                <button class="save-user edit-mode m-1 btn btn-sm btn-success" style=" display: none;">Save</button>
+                <br />
+                <button class="cancel-user edit-mode m-1 btn btn-sm btn-primary" style="display: none;">Cancel</button>
+            </td>
+        </tr>
+                }
+            }
+
 
         </tbody>
     </table>
     <br />
 
 </div>
-<div class="col-12 d-inline-flex justify-content-center align-item-center">
+@*<div class="col-12 d-inline-flex justify-content-center align-item-center">
     <div class="d-inline-flex justify-content-center align-item-center">
 
         @{
@@ -161,6 +189,7 @@
                             </li>
                         }
                         |
+                        
                     </ul>
                 </nav>
 
@@ -169,7 +198,7 @@
         }
 
     </div>
-</div>
+</div>*@
 <div class="modal fade-modal" tabindex="-1" aria-labelledby="exampleModalLabel" id="AddUserModal" aria-hidden="true" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content m-2">
@@ -180,25 +209,25 @@
             <div class="modal-body">
 
                 <form method="post">
-                    <div id="AddimageView" class="form-group text-center" style="display: none;">
+                    <div id="AddimageView" style="display: none;max-width:100%">
 
                     </div>
                     <div id="myForm">
 
-                        <div class="form-group">
+                        <div class="form-group col-12">
                             <label for="">Full Name:</label>
-                            <input type="text" placeholder="Enter your full name" class="form-control" id="AddNameText" autocomplete="off">
+                            <input style="max-width:100%;" type="text" placeholder="Enter your full name" class="form-control" id="AddNameText" autocomplete="off">
                             <span class="text-danger" id="eName"></span>
                         </div>
                         <div class="form-group mt-2 row">
                             <div class="col">
                                 <label>Email:</label>
-                                <input type="email" placeholder="Enter your email" class="form-control" id="AddEmailText" autocomplete="off">
+                                <input style="max-width:100%" type="email" placeholder="Enter your email" class="form-control" id="AddEmailText" autocomplete="off">
                                 <span class="text-danger" id="eEmail"></span>
                             </div>
                             <div class="col">
                                 <label>Contact:</label>
-                                <input type="number" placeholder="Enter your contact" class="form-control" id="AddContactText" autocomplete="off">
+                                <input style="max-width:100%" type="number" placeholder="Enter your contact" class="form-control" id="AddContactText" autocomplete="off">
                                 <span class="text-danger" id="eContact"></span>
                             </div>
                         </div>
@@ -225,7 +254,7 @@
                         </div>
                         <div class="form-group mt-2">
                             <label>Address:</label>
-                            <textarea type="text" placeholder="Enter your address" class="form-control" id="AddAddressText" autocomplete="off" style="resize:none;"></textarea>
+                            <textarea type="text" placeholder="Enter your address" class="form-control" id="AddAddressText" autocomplete="off" style="max-width:100%; resize:none;"></textarea>
                             <span class="text-danger" id="eAddress"></span>
                         </div>
 
@@ -233,7 +262,7 @@
                             <div class="col">
                                 <label>Country:</label>
 
-                                <select class="form-control" name="Countries" id="AddCountryText" autocomplete="off">
+                                <select style="max-width:100%" class="form-control" name="Countries" id="AddCountryText" autocomplete="off">
                                     <option selected="selected">--Select--</option>
                                     <option value="India">India</option>
 
@@ -243,7 +272,7 @@
 
                             <div class="col">
                                 <label>State:</label>
-                                <select class="form-control" name="States" id="AddStateText" autocomplete="off">
+                                <select style="max-width:100%" class="form-control" name="States" id="AddStateText" autocomplete="off">
                                     <option selected="selected">--Select--</option>
                                     <option value="Delhi">Delhi</option>
                                     <option value="Delhi">UttarPardesh</option>
@@ -256,7 +285,7 @@
                         </div>
                         <div id="passForm" class="form-group mt-2">
                             <label>Password:</label>
-                            <input type="password" placeholder="Enter your password" class="form-control" id="AddPasswordText" autocomplete="off">
+                            <input style="max-width:100%" type="password" placeholder="Enter your password" class="form-control" id="AddPasswordText" autocomplete="off">
                             <span class="text-danger" id="ePass"></span>
                         </div>
                         <div class="form-group mt-2">
@@ -299,10 +328,44 @@
     </div>
 </div>
 
+@*<div style="display:none" id="exlOutput" class="tbl">
+    <h2 class="text-center">User Form</h2>
+    <table id="myTable" class="table text-center table-bordered table-hover">
+        <caption>User Data Table</caption>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Contact</th>
+                <th>Gender</th>
+                <th>Date_Of_Birth</th>
+                <th>Address</th>
+                <th>Country</th>
+                <th>State</th>
+                <th>Hobbies</th>                
+            </tr>
+        </thead>
+        <tbody id="table_data">
+            @foreach (var item in Model)
+            {
+                    <tr class="Searchtbl">
+                      <td>@item.userid</td>
+                      <td>@item.User_Name</td>
+                      <td>@item.Email</td>
+                      <td>@item.Contact</td>
+                      <td>@item.Gender</td>
+                      <td>@item.Date_Of_Birth</td>
+                      <td>@item.Address</td>
+                      <td>@item.Country</td>
+                      <td>@item.State</td>
+                      <td>@item.Hobbies</td>                       
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>*@
 
 <script src="~/Scripts/jquery-3.4.1.js"></script>
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script src="~/Scripts/Custom/MyCustom.js"></script>
-
-
-

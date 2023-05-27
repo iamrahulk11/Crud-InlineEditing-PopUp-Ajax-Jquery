@@ -22,9 +22,15 @@ textarea {
 }
 
 .tbl {
+    
     align-items: center;
     display: flex;
     justify-content: center;
+}
+.tbl2 {
+    align-items: center;
+    display: flex;
+    justify-content: end;
 }
     #myTable{
     font-family: Arial,Helvetica,sans-serif;

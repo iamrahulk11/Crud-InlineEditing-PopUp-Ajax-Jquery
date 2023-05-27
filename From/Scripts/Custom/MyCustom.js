@@ -1,32 +1,138 @@
 ﻿$(document).ready(function () {
     $('.edit-mode').hide();
-    $('.edit-user, .cancel-user').on('click', function () {
+    $('.edit-user').on('click', function () {
         debugger;
         var tr = $(this).parents('tr:first');
         tr.find('.edit-mode, .display-mode').toggle();
-
+        tr.find('#selectuser').prop('checked', false);
+        tr.find('#selectuser').prop("disabled", true);
     });
+    $('.cancel-user').on('click', function () {
+        debugger;
+        var tr = $(this).parents('tr:first');
+        tr.find('.edit-mode, .display-mode').toggle();
+        tr.find('#selectuser').prop("disabled", false);
+    }); 
 
-    /*function Contains(text_one, text_two) {
+   /* $('#table_data').on("change", "input[type=checkbox]", function () {
+        if (this.checked) {
+            $('#ExportSelectedExcel').css('display', 'block');
+            $('#ExportExcel').css('display', 'none');
+        } else {
+            var check = true;
+            $('.Searchtbl').each(function () {
+                if($(this).find('input[type=checkbox]:first').prop('checked')) {
+                    check = false;
+                }
+                
+
+            });
+            if (check == false) {
+                $('#ExportSelectedExcel').css('display', 'none');
+                $('#ExportExcel').css('display', 'block');
+            }
+        }
+
+    });*/
+
+
+    function Contains(text_one, text_two) {
         if (text_one.indexOf(text_two) != -1) {
+            
             return true;
         }
     }
-    $('#search').keyup(function () {
-            var searchText = $('#search').val().toLowerCase();
+    $('#SearchText').keyup(function () {
+        var searchText = $('#SearchText').val().toLowerCase();
+       
             $('.Searchtbl').each(function () {
-                if (!Contains($(this).text().toLowerCase(),searchText)) {
+                if (!Contains($(this).text().toLowerCase(), searchText)) {
+                   
                     $(this).hide();
+                    
                 } else {
+                   
                     $(this).show();
+
                 }
+
             });
-        });*/
+           
+              
+ 
+    });
     
    // ShowUserData();
 
 });
+function ExportExcel() {
 
+    $.ajax({
+        url: '/Home/ExcelDataImport',
+        type: 'Get',
+        datatype: 'Json',
+        async: false,
+        contentType: 'application/json;charset=utf-8;',
+        success: function (result, statu, xhr) {
+            debugger;          
+            //console.log(result);
+            var save = [];
+            var heading = ['Id', 'Name', 'Email', 'Contact','Gender','DateOfBirth','Address','Country','State','Hobbies'];
+            $.each(result, function (index, item) {
+                save.push([item.userid, item.User_Name, item.Email, item.Contact, item.Gender, item.Date_Of_Birth, item.Address, item.Country, item.State, item.Hobbies])                
+            });
+            var exlheader = document.getElementById('exlheader');
+            var csv = '';
+            var row = "";
+            csv += exlheader.innerHTML + '\r\n';
+            /*//merge the data with CSV
+            save.forEach(function (row) {
+                csv += row.join(',');
+                csv += "\n";
+            });*/
+            for (var i = 0; i < heading.length; i++) {
+                row += heading[i] + ',';
+            }
+            row = row.slice(0, -1);
+            csv += row + '\r\n';
+            for (var i = 0; i < save.length; i++) {
+                var row = "";
+                for (var j = 0; j < heading.length;j++) {
+                    row += '"' + save[i][j] + '",';
+                }
+                row = row.slice(0, row.length - 1);
+                csv += row + '\r\n';
+            }
+            
+            console.log(csv);
+            var hiddenElement = document.createElement('a');
+            hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+            hiddenElement.target = '_blank';
+                          
+            hiddenElement.download = 'UserForm.csv';
+            hiddenElement.click();  
+            /*
+            // var downloadName = 'User Form Data';
+            var strStyle = '<style>.totalrow {mso - style - parent:style0;background-color:#becebe!important;font-weight:bold;}.grandTotalRow {background - color:#9fab9f!important;font-weight:bold;}.ng-hide{display:none;mso-width-source:userset;mso-width-alt:0}</style>'
+            var uri = 'data:application/vnd.ms-excel;base64,'
+                , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]>' + strStyle + '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines /></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+                , base64 = function (s) { return window.btoa(unescape(encodeURIComponent(s))) }
+                , format = function (s, c) { return s.replace(/{(\w+)}/g, function (m, p) { return c[p]; }) }
+            //table.replace(/['"]+/g, '');
+            var ctx = { worksheet: downloadName || 'Worksheet', save };
+            var url = uri + base64(format(template, ctx));
+
+            var a = document.createElement('a');
+            a.href = url;
+            downloadName = downloadName + '.xls';
+            a.download = downloadName;
+            a.click();*/
+            
+        }, error: function () {
+            alert('Failed to export');
+        }
+    });
+}
 
 $('.save-user').on('click', function () {
     debugger;
@@ -139,6 +245,7 @@ $('.save-user').on('click', function () {
             $tds.find("#imgUpload").attr("src", data.ImagePath);
             //location.reload();
             $tds.find('.edit-mode, .display-mode').toggle();
+            $tds.find('#selectuser').prop("disabled", false);
             alert('Record updated Successfully!!')
 
         },
@@ -150,11 +257,14 @@ $('.save-user').on('click', function () {
 
 $('.edit-user').on('click', function () {
     debugger;
+   
     $('#Delete').hide();
     var $row = $(this).closest("tr"),
         $tds = $row.find("td");
     $.each($tds, function () {
-
+        
+        
+        
         $tds.find("#NameText").val($tds.find('#lblName').text());
 
         $tds.find("#EmailText").val($tds.find('#lblEmail').text());
@@ -199,6 +309,7 @@ $('.edit-user').on('click', function () {
 });
 
 function ImgView(userid) {
+    
 
     $.ajax({
         url: '/Home/ImgView?id=' + userid,
@@ -210,12 +321,13 @@ function ImgView(userid) {
             $('#AddUserModal').modal('show');
             $('#AddUserRecord').css('display', 'none');
 
+           
             $('#UserHeader').text('Image');
             $('#AddimageView').show();
             $('#myForm').hide();
             // alert(data);
             //  $('#imageView').html('<img src="' + data + '"height="350" width="350">');
-            $('#AddimageView').html('<img src="' + data + '" height="200" width="300">');
+            $('#AddimageView').html('<img src="' + data + '" height="100%" width="100%">');
         },
         error: function () {
             alert('Something went wrong!!');
@@ -224,8 +336,9 @@ function ImgView(userid) {
 }
 
 $('#btnAddRecord').on('click', function () {
-
+    $('#AddUserModal').modal('show');
     $('.edit-mode').hide();
+    $('.display-mode').show();
     $('#eName').text("");
     $('#eEmail').text("");
     $('#eContact').text("");
@@ -236,7 +349,7 @@ $('#btnAddRecord').on('click', function () {
     $('#ePass').text("");
     $('#eImage').text("");
     $('#eHobby').text("");
-    $('#AddUserModal').modal('show');
+    
     //$('#passForm').show();
     $('#AddimageView').hide();
     $('#AddimgUpload').hide();
@@ -308,7 +421,7 @@ function AddUserRecord() {
         data: userdata,
         //contentType: 'application/xxx-www-form-urlencoded;charset=utf-8;',
         dataType: 'json',
-
+        
         processData: false,
         contentType: false,
         success: function () {
@@ -466,6 +579,19 @@ function Delete(userid) {
     })
 }
 
+function ExportSelectedExcel() {
+    var checkboxes =
+        document.getElementsById('selectuser');
+    var result = "";
+
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            result += checkboxes[i].value
+                + " ";
+        }
+    }
+}
+
 /*$('#btnSearch').on('click', function () {
     var searchUserName = $('#search').val()
     $.ajax({
@@ -479,13 +605,20 @@ function Delete(userid) {
     });
 });*/
 
-function ShowUserData() {
-    var userData = [];
+/*function ShowUserData(i) {
+
+    var SearchText = "";
+    if ($('#SearhText').val() != "") {
+        SearchText = $('#SearhText').val();
+    }
+     
+
     var url = '/Home/UserRegister';
 
     $.ajax({
         url: url,
         type: 'Get',
+        data: { PageNumber = i, SearchText= SearchText },
         datatype: 'Json',
         async: false,
         contentType: 'application/json;charset=utf-8;',
@@ -495,7 +628,8 @@ function ShowUserData() {
             //console.log(result);
             $.each(result, function (index, item) {
                 debugger;
-                /* let dateOfBirth = new Date(parseInt(item.DateOfBirth.substr(6)));
+                
+                *//* let dateOfBirth = new Date(parseInt(item.DateOfBirth.substr(6)));
                  var date = dateOfBirth.getDate() + "/" + (dateOfBirth.getMonth() + 1) + "/" + dateOfBirth.getFullYear();
                  var editoperation = '<a href="#" class="btn btn-primary btn-sm m-1" onclick="Edit(' + item.Userid + ')">Edit</a>';
                  var deleteOperation = '<a href="#" class="btn btn-primary btn-sm m-1" onclick="Delete(' + item.Userid + ');">Delete</a>';
@@ -523,7 +657,7 @@ function ShowUserData() {
                  object += '<td><a href="#" class="btn btn-primary btn-sm m-2" onclick="Edit(' + item.Userid + ')">Edit</a> || <a href="#" class="btn btn-primary btn-sm m-2" onclick="Delete(' + item.Userid + ');">Delete</a></td>';
  
                  object += '</tr>';
-                 */
+                 *//*
                 console.log(item);
 
 
@@ -535,7 +669,7 @@ function ShowUserData() {
         }
 
     });
-}
+}*/
 
 /*function GetCountry() {
     $.ajax({
